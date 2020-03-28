@@ -1,0 +1,17 @@
+{
+  "name": "@plundaahl/mud",
+  "version": "0.0.1",
+  "description": "Patrick tries to make a MUD",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "@plundaahl",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^13.9.5",
+    "jest": "^25.2.3",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  }
+}
