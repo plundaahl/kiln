@@ -4,4 +4,6 @@ export {
     IDependencyLocatorFacade,
     IServiceLocator,
     ISystemLocator,
+    ISystemRegistry,
+    IServiceRegistry,
 } from './DependencyLocatorFacade';
