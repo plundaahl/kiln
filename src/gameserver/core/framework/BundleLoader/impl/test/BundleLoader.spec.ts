@@ -11,19 +11,19 @@ test(
     () => {
         interface FooModule extends IModule<'foo'> { type: 'foo' };
         const fooModuleLoaderStrategy: IModuleLoaderStrategy<'foo', FooModule> = {
-            type: "foo",
+            loadsType: () => "foo",
             load: jest.fn(),
         }
 
         interface BarModule extends IModule<'bar'> { type: 'bar' };
         const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar', BarModule> = {
-            type: "bar",
+            loadsType: () => "bar",
             load: jest.fn(),
         }
 
         interface BazModule extends IModule<'baz'> { type: 'baz' };
         const bazModuleLoaderStrategy: IModuleLoaderStrategy<'baz', BazModule> = {
-            type: "baz",
+            loadsType: () => "baz",
             load: jest.fn(),
         }
 
@@ -54,12 +54,12 @@ test(
     () => {
         interface FooModule extends IModule<'foo'> { type: 'foo' };
         const fooModuleLoaderStrategyA: IModuleLoaderStrategy<'foo', FooModule> = {
-            type: "foo",
+            loadsType: () => "foo",
             load: jest.fn(),
         }
 
         const fooModuleLoaderStrategyB: IModuleLoaderStrategy<'foo', FooModule> = {
-            type: "foo",
+            loadsType: () => "foo",
             load: jest.fn(),
         }
 
@@ -77,7 +77,7 @@ test(
     () => {
         interface BarModule extends IModule<'bar'> { type: 'bar' };
         const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar', BarModule> = {
-            type: "bar",
+            loadsType: () => "bar",
             load: jest.fn(),
         }
 
@@ -100,19 +100,19 @@ test(
     () => {
         interface FooModule extends IModule<'foo'> { type: 'foo' };
         const fooModuleLoaderStrategy: IModuleLoaderStrategy<'foo', FooModule> = {
-            type: "foo",
+            loadsType: () => "foo",
             load: jest.fn(),
         }
 
         interface BarModule extends IModule<'bar'> { type: 'bar' };
         const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar', BarModule> = {
-            type: "bar",
+            loadsType: () => "bar",
             load: jest.fn(),
         }
 
         interface BazModule extends IModule<'baz'> { type: 'baz' };
         const bazModuleLoaderStrategy: IModuleLoaderStrategy<'baz', BazModule> = {
-            type: "baz",
+            loadsType: () => "baz",
             load: jest.fn(),
         }
 

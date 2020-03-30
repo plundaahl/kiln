@@ -24,7 +24,7 @@ test(`Should pass register the module's factory, plus all identifiers, with the 
     };
 
     const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
-    const strategy = new ServiceModuleLoaderStrategy(locator);
+    const strategy = new ServiceModuleLoaderStrategy(locator, () => { });
 
     strategy.load(module);
 
@@ -52,7 +52,7 @@ test(`Should error if module type is not actually "system"`, () => {
     };
 
     const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
-    const strategy = new ServiceModuleLoaderStrategy(locator);
+    const strategy = new ServiceModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as IServiceModule<TestSystem>);
@@ -75,7 +75,7 @@ test(`Should error if module does not have a #factory property`, () => {
     };
 
     const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
-    const strategy = new ServiceModuleLoaderStrategy(locator);
+    const strategy = new ServiceModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as IServiceModule<TestSystem>);
@@ -95,7 +95,7 @@ test(`Should error if module does not have an #identifiers property`, () => {
     };
 
     const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
-    const strategy = new ServiceModuleLoaderStrategy(locator);
+    const strategy = new ServiceModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as IServiceModule<TestSystem>);
@@ -113,9 +113,33 @@ test(`Should error if module has 0 identifiers`, () => {
     };
 
     const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
-    const strategy = new ServiceModuleLoaderStrategy(locator);
+    const strategy = new ServiceModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as IServiceModule<TestSystem>);
     }).toThrow();
+});
+
+test(`When #load() is called, should pass first identifier into #onServiceRegistered`, () => {
+    type TestSystem = { foo: 'foo' };
+
+    const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
+
+    const module: IServiceModule<TestSystem> = {
+        type: 'service',
+        name: 'TestSystemModule',
+        factory: () => { return { foo: 'foo' } },
+        identifiers: [
+            identifierA,
+        ],
+    };
+
+    const onServiceRegistered = jest.fn();
+    const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
+    const strategy = new ServiceModuleLoaderStrategy(locator, onServiceRegistered);
+
+    strategy.load(module);
+
+    expect(onServiceRegistered).toHaveBeenCalledTimes(1);
+    expect(onServiceRegistered).toHaveBeenCalledWith(identifierA);
 });

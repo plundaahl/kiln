@@ -1,7 +1,7 @@
 import { IModuleLoaderStrategy } from '../../BundleLoader';
 import { IModule } from '../../BundleLoader';
 import { ISystemModule } from './ISystemModule';
-import { ISystemRegistry } from '../../DependencyLocator';
+import { ISystemRegistry, TypedIdentifier } from '../../DependencyLocator';
 
 /**
  * Loads ISystemModules, registering their factories with the core
@@ -12,10 +12,13 @@ export class SystemModuleLoaderStrategy implements IModuleLoaderStrategy<'system
     /**
      * The type of IModule this ModuleLoaderStrategy loads.
      */
-    public readonly type: 'system';
+    public loadsType(): 'system' {
+        return 'system';
+    };
 
     constructor(
         private readonly dependencyLocator: ISystemRegistry,
+        private readonly onSystemRegistered: (identifier: TypedIdentifier<any>) => void,
     ) { }
 
     /**
@@ -29,6 +32,8 @@ export class SystemModuleLoaderStrategy implements IModuleLoaderStrategy<'system
         const { factory, identifiers } = systemModule;
 
         this.dependencyLocator.registerSystemFactory(factory, ...identifiers);
+
+        this.onSystemRegistered(systemModule.identifiers[0]);
     }
 
     /**

@@ -24,7 +24,7 @@ test(`Should pass register the module's factory, plus all identifiers, with the 
     };
 
     const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
-    const strategy = new SystemModuleLoaderStrategy(locator);
+    const strategy = new SystemModuleLoaderStrategy(locator, () => { });
 
     strategy.load(module);
 
@@ -52,7 +52,7 @@ test(`Should error if module type is not actually "system"`, () => {
     };
 
     const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
-    const strategy = new SystemModuleLoaderStrategy(locator);
+    const strategy = new SystemModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as ISystemModule<TestSystem>);
@@ -75,7 +75,7 @@ test(`Should error if module does not have a #factory property`, () => {
     };
 
     const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
-    const strategy = new SystemModuleLoaderStrategy(locator);
+    const strategy = new SystemModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as ISystemModule<TestSystem>);
@@ -95,7 +95,7 @@ test(`Should error if module does not have an #identifiers property`, () => {
     };
 
     const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
-    const strategy = new SystemModuleLoaderStrategy(locator);
+    const strategy = new SystemModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as ISystemModule<TestSystem>);
@@ -113,9 +113,33 @@ test(`Should error if module has 0 identifiers`, () => {
     };
 
     const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
-    const strategy = new SystemModuleLoaderStrategy(locator);
+    const strategy = new SystemModuleLoaderStrategy(locator, () => { });
 
     expect(() => {
         strategy.load(module as unknown as ISystemModule<TestSystem>);
     }).toThrow();
+});
+
+test(`When #load() is called, should pass first identifier into #onSystemRegistered`, () => {
+    type TestSystem = { foo: 'foo' };
+
+    const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
+
+    const module: ISystemModule<TestSystem> = {
+        type: 'system',
+        name: 'TestSystemModule',
+        factory: () => { return { foo: 'foo' } },
+        identifiers: [
+            identifierA,
+        ],
+    };
+
+    const onSystemRegistered = jest.fn();
+    const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
+    const strategy = new SystemModuleLoaderStrategy(locator, onSystemRegistered);
+
+    strategy.load(module);
+
+    expect(onSystemRegistered).toHaveBeenCalledTimes(1);
+    expect(onSystemRegistered).toHaveBeenCalledWith(identifierA);
 });

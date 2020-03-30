@@ -5,13 +5,13 @@ import { IModuleLoaderStrategy } from '../IModuleLoaderStrategy';
 
 export class BundleLoader implements IBundleLoader {
 
-    private readonly moduleLoaderStrategies: Map<String, IModuleLoaderStrategy<String, IModule<String>>>;
+    private readonly moduleLoaderStrategies: Map<string, IModuleLoaderStrategy<string, IModule<string>>>;
 
-    constructor(...moduleLoaderStrategies: IModuleLoaderStrategy<String, IModule<String>>[]) {
+    constructor(...moduleLoaderStrategies: IModuleLoaderStrategy<string, IModule<string>>[]) {
         this.moduleLoaderStrategies = new Map();
 
         for (let strategy of moduleLoaderStrategies) {
-            const { type } = strategy;
+            const type = strategy.loadsType();
 
             if (this.moduleLoaderStrategies.has(type)) {
                 throw new Error(
@@ -29,7 +29,7 @@ export class BundleLoader implements IBundleLoader {
             const loaderStrategy = this.moduleLoaderStrategies.get(type);
 
             if (loaderStrategy === undefined) {
-                const strategies: String[] = [];
+                const strategies: string[] = [];
 
                 for (let strategy of this.moduleLoaderStrategies.keys()) {
                     strategies.push(strategy)

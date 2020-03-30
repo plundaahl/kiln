@@ -1,7 +1,10 @@
 import { IModuleLoaderStrategy } from '../../BundleLoader';
 import { IModule } from '../../BundleLoader';
 import { IServiceModule } from './IServiceModule';
-import { IServiceRegistry } from '../../DependencyLocator';
+import {
+    IServiceRegistry,
+    TypedIdentifier,
+} from '../../DependencyLocator';
 
 /**
  * Loads IServiceModules, registering their factories with the core
@@ -12,10 +15,13 @@ export class ServiceModuleLoaderStrategy implements IModuleLoaderStrategy<'servi
     /**
      * The type of IModule this ModuleLoaderStrategy loads.
      */
-    public readonly type: 'service';
+    public loadsType(): 'service' {
+        return 'service';
+    };
 
     constructor(
         private readonly dependencyLocator: IServiceRegistry,
+        private readonly onServiceLoaded: (identifier: TypedIdentifier<any>) => void,
     ) { }
 
     /**
@@ -29,6 +35,8 @@ export class ServiceModuleLoaderStrategy implements IModuleLoaderStrategy<'servi
         const { factory, identifiers } = systemModule;
 
         this.dependencyLocator.registerServiceFactory(factory, ...identifiers);
+
+        this.onServiceLoaded(identifiers[0]);
     }
 
     /**

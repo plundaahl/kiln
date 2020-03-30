@@ -6,7 +6,7 @@ import {
 
 export interface ISystemModule<T> extends IModule<'system'> {
     type: 'system',
-    name: String,
+    name: string,
     factory: (locator: ISystemLocator) => T,
     identifiers: [TypedIdentifier<Partial<T>>, ...TypedIdentifier<Partial<T>>[]],
 }
