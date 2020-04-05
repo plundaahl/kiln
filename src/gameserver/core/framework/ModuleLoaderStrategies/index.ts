@@ -1,5 +1,5 @@
 export * as moduleTypes from './moduleTypes';
-export { Module } from './Module';
 
+export { LoaderModuleLoaderStrategy } from './LoaderModuleLoaderStrategy';
 export { ServiceModuleLoaderStrategy } from './ServiceModuleLoaderStrategy';
 export { SystemModuleLoaderStrategy } from './SystemModuleLoaderStrategy';

@@ -4,7 +4,8 @@
   "description": "Patrick tries to make a MUD",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "type-check": "./node_modules/.bin/tsc"
   },
   "author": "@plundaahl",
   "license": "ISC",

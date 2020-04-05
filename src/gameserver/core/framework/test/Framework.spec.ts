@@ -1,8 +1,7 @@
 import { TypedIdentifier } from '../DependencyLocator';
-import {
-    Framework,
-    Bundle,
-} from '..';
+import { Framework } from '..';
+import { IBundle } from '../BundleLoader';
+import { ISystemModule, IServiceModule } from '../ModuleLoaderStrategies/moduleTypes';
 
 describe(`Bundle Loading`, () => {
 
@@ -13,17 +12,17 @@ describe(`Bundle Loading`, () => {
         () => {
             const testSystemModuleFactoryFn = jest.fn();
 
-            const testBundle: Bundle = {
-                name: 'TestBundle',
-                modules: [
-                    {
-                        type: 'system',
-                        name: 'TestSystemModule',
+            const testBundle: IBundle = {
+                getName: () => 'TestBundle',
+                getModules: () => [
+                    ({
+                        getType: () => 'system',
+                        getName: () => 'TestSystemModule',
                         factory: testSystemModuleFactoryFn,
                         identifiers: [
                             new TypedIdentifier<any>('TestSystemModule'),
                         ],
-                    }
+                    } as ISystemModule<any>)
                 ]
             }
 
@@ -39,17 +38,17 @@ describe(`Bundle Loading`, () => {
         () => {
             const testServiceModuleFactoryFn = jest.fn();
 
-            const testBundle: Bundle = {
-                name: 'TestBundle',
-                modules: [
-                    {
-                        type: 'service',
-                        name: 'TestServiceModule',
+            const testBundle: IBundle = {
+                getName: () => 'TestBundle',
+                getModules: () => [
+                    ({
+                        getType: () => 'service',
+                        getName: () => 'TestServiceModule',
                         factory: testServiceModuleFactoryFn,
                         identifiers: [
                             new TypedIdentifier<any>('TestServiceModule'),
                         ],
-                    }
+                    } as IServiceModule<any>)
                 ]
             }
 

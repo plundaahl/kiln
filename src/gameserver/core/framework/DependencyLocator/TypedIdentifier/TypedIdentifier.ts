@@ -1,6 +1,6 @@
 export class TypedIdentifier<T> {
     public readonly symbol: Symbol;
-    private readonly name: String;
+    private readonly name: string;
 
     constructor(name: string) {
         if (name.length === 0) {

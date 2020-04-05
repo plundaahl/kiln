@@ -1,4 +1,4 @@
-export interface IModule<T extends String> {
-    type: T,
-    name: String,
+export interface IModule<T extends string> {
+    getType(): T,
+    getName(): string,
 }

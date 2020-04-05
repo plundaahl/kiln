@@ -1,50 +1,25 @@
 import { IBundleLoader } from '../IBundleLoader';
 import { IBundle } from '../IBundle';
-import { IModule } from '../IModule';
 import { IModuleLoaderStrategy } from '../IModuleLoaderStrategy';
+import { IModuleLoader } from '../IModuleLoader';
+import { ModuleLoader } from './ModuleLoader';
+import { IModuleLoaderRegistry } from '../IModuleLoaderRegistry';
 
 export class BundleLoader implements IBundleLoader {
 
-    private readonly moduleLoaderStrategies: Map<string, IModuleLoaderStrategy<string, IModule<string>>>;
-
-    constructor(...moduleLoaderStrategies: IModuleLoaderStrategy<string, IModule<string>>[]) {
-        this.moduleLoaderStrategies = new Map();
+    constructor(
+        private readonly moduleLoader: IModuleLoader & IModuleLoaderRegistry,
+        ...moduleLoaderStrategies: IModuleLoaderStrategy<string>[]
+    ) {
 
         for (let strategy of moduleLoaderStrategies) {
-            const type = strategy.loadsType();
-
-            if (this.moduleLoaderStrategies.has(type)) {
-                throw new Error(
-                    `Attempting to load two IModuleLoaderStrategies ` +
-                    `with the same type ${type}`
-                );
-            }
-            this.moduleLoaderStrategies.set(type, strategy);
+            this.moduleLoader.registerModuleLoaderStrategy(strategy);
         }
     }
 
-    loadBundle(bundle: IBundle): void {
-        for (let module of bundle.modules) {
-            const { type } = module;
-            const loaderStrategy = this.moduleLoaderStrategies.get(type);
-
-            if (loaderStrategy === undefined) {
-                const strategies: string[] = [];
-
-                for (let strategy of this.moduleLoaderStrategies.keys()) {
-                    strategies.push(strategy)
-                }
-
-                throw new Error(
-                    `Attempting to load module ${module.name} of type ${type} ` +
-                    `from bundle ${bundle.name}, ` +
-                    `but can't find matching ModuleLoaderStrategy. ` +
-                    `Currently loaded ModuleLoaders:\n` +
-                    strategies.map(type => `  ${type}`).join(`\n`)
-                );
-            }
-
-            loaderStrategy.load(module);
-        }
+    loadBundles(...bundles: IBundle[]): void {
+        this.moduleLoader.loadModules(
+            ...bundles.flatMap(bundle => bundle.getModules())
+        );
     }
 }

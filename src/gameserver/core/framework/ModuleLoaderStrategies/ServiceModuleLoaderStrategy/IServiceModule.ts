@@ -5,8 +5,8 @@ import {
 } from '../../DependencyLocator';
 
 export interface IServiceModule<T> extends IModule<'service'> {
-    type: 'service',
-    name: string,
-    factory: (locator: ISystemLocator) => T,
+    getType(): 'service',
+    getName(): string,
+    factory(locator: ISystemLocator): T,
     identifiers: [TypedIdentifier<Partial<T>>, ...TypedIdentifier<Partial<T>>[]],
 }

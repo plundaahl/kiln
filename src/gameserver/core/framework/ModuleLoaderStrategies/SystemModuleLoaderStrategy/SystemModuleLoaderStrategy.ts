@@ -7,12 +7,12 @@ import { ISystemRegistry, TypedIdentifier } from '../../DependencyLocator';
  * Loads ISystemModules, registering their factories with the core
  * DependencyLocator, making them available inside the engine.
  */
-export class SystemModuleLoaderStrategy implements IModuleLoaderStrategy<'system', IModule<'system'>> {
+export class SystemModuleLoaderStrategy implements IModuleLoaderStrategy<'system'> {
 
     /**
      * The type of IModule this ModuleLoaderStrategy loads.
      */
-    public loadsType(): 'system' {
+    public getType(): 'system' {
         return 'system';
     };
 
@@ -44,21 +44,22 @@ export class SystemModuleLoaderStrategy implements IModuleLoaderStrategy<'system
      * @throws if module is not valid ISystemModule
      */
     private validateModule(module: IModule<'system'>): ISystemModule<any> {
-        if (module.type !== 'system') {
-            throw new Error(`SystemModuleLoaderStrategy #load was passed module of type ${module.type}`);
+        const type = module.getType();
+        if (type !== 'system') {
+            throw new Error(`SystemModuleLoaderStrategy #load was passed module of type ${type}`);
         }
 
         const systemModule: ISystemModule<any> = module as ISystemModule<any>;
         if (systemModule.factory === undefined) {
-            throw new Error(`Module ${module.name} contains no #factory() function`);
+            throw new Error(`Module ${module.getName} contains no #factory() function`);
         }
 
         if (systemModule.identifiers === undefined) {
-            throw new Error(`Module ${module.name} contains no #identifiers property`);
+            throw new Error(`Module ${module.getName} contains no #identifiers property`);
         }
 
         if (systemModule.identifiers.length === 0) {
-            throw new Error(`Module ${module.name} must specify at least 1 identifier`);
+            throw new Error(`Module ${module.getName} must specify at least 1 identifier`);
         }
 
         return module as ISystemModule<any>;

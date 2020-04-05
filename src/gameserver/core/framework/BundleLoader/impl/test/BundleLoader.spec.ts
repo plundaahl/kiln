@@ -1,5 +1,6 @@
 import {
     BundleLoader,
+    ModuleLoader,
     IModule,
     IModuleLoaderStrategy,
 } from '../..'
@@ -9,36 +10,37 @@ test(
     `WHEN I try to load a bundle containing modules of all of those types, ` +
     `THEN BundleLoader should call #load() on each of those strategies without error.`,
     () => {
-        interface FooModule extends IModule<'foo'> { type: 'foo' };
-        const fooModuleLoaderStrategy: IModuleLoaderStrategy<'foo', FooModule> = {
-            loadsType: () => "foo",
+        interface FooModule extends IModule<'foo'> { getType(): 'foo' };
+        const fooModuleLoaderStrategy: IModuleLoaderStrategy<'foo'> = {
+            getType: () => "foo",
             load: jest.fn(),
         }
 
-        interface BarModule extends IModule<'bar'> { type: 'bar' };
-        const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar', BarModule> = {
-            loadsType: () => "bar",
+        interface BarModule extends IModule<'bar'> { getType(): 'bar' };
+        const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar'> = {
+            getType: () => "bar",
             load: jest.fn(),
         }
 
-        interface BazModule extends IModule<'baz'> { type: 'baz' };
-        const bazModuleLoaderStrategy: IModuleLoaderStrategy<'baz', BazModule> = {
-            loadsType: () => "baz",
+        interface BazModule extends IModule<'baz'> { getType(): 'baz' };
+        const bazModuleLoaderStrategy: IModuleLoaderStrategy<'baz'> = {
+            getType: () => "baz",
             load: jest.fn(),
         }
 
         const loader = new BundleLoader(
+            new ModuleLoader,
             fooModuleLoaderStrategy,
             barModuleLoaderStrategy,
             bazModuleLoaderStrategy,
         );
 
-        loader.loadBundle({
-            name: 'TestBundle',
-            modules: [
-                { type: 'foo', name: 'FooModule' },
-                { type: 'bar', name: 'BarModule' },
-                { type: 'baz', name: 'BazModule' },
+        loader.loadBundles({
+            getName: () => 'TestBundle',
+            getModules: () => [
+                { getType: () => 'foo', getName: () => 'FooModule', getBundle: () => 'foo' },
+                { getType: () => 'bar', getName: () => 'BarModule', getBundle: () => 'bar' },
+                { getType: () => 'baz', getName: () => 'BazModule', getBundle: () => 'baz' },
             ]
         });
 
@@ -52,18 +54,19 @@ test(
     `AND I pass in two or more ModuleLoaderStrategies with the same type, ` +
     `THEN BundleLoader should error.`,
     () => {
-        interface FooModule extends IModule<'foo'> { type: 'foo' };
-        const fooModuleLoaderStrategyA: IModuleLoaderStrategy<'foo', FooModule> = {
-            loadsType: () => "foo",
+        interface FooModule extends IModule<'foo'> { getType(): 'foo' };
+        const fooModuleLoaderStrategyA: IModuleLoaderStrategy<'foo'> = {
+            getType: () => "foo",
             load: jest.fn(),
         }
 
-        const fooModuleLoaderStrategyB: IModuleLoaderStrategy<'foo', FooModule> = {
-            loadsType: () => "foo",
+        const fooModuleLoaderStrategyB: IModuleLoaderStrategy<'foo'> = {
+            getType: () => "foo",
             load: jest.fn(),
         }
 
         expect(() => new BundleLoader(
+            new ModuleLoader,
             fooModuleLoaderStrategyA,
             fooModuleLoaderStrategyB,
         )).toThrow();
@@ -75,21 +78,24 @@ test(
     `WHEN I attempt to load the bundle, ` +
     `THEN BundleLoader #loadBundle() should error.`,
     () => {
-        interface BarModule extends IModule<'bar'> { type: 'bar' };
-        const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar', BarModule> = {
-            loadsType: () => "bar",
+        interface BarModule extends IModule<'bar'> { getType(): 'bar' };
+        const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar'> = {
+            getType: () => "bar",
             load: jest.fn(),
         }
 
         const bundle = {
-            name: 'TestBundle',
-            modules: [
-                { type: 'foo', name: 'FooModule' },
+            getName: () => 'TestBundle',
+            getModules: () => [
+                { getType: () => 'foo', getName: () => 'FooModule' },
             ]
         }
 
-        const loader = new BundleLoader(barModuleLoaderStrategy);
-        expect(() => loader.loadBundle(bundle)).toThrow();
+        const loader = new BundleLoader(
+            new ModuleLoader,
+            barModuleLoaderStrategy,
+        );
+        expect(() => loader.loadBundles(bundle)).toThrow();
     });
 
 test(
@@ -98,39 +104,40 @@ test(
     `WHEN I pass that bundle into BundleLoader.loadBundle, ` +
     `THEN BundleLoader should pass the correct modules into the correct ModuleLoaderStrategies.`,
     () => {
-        interface FooModule extends IModule<'foo'> { type: 'foo' };
-        const fooModuleLoaderStrategy: IModuleLoaderStrategy<'foo', FooModule> = {
-            loadsType: () => "foo",
+        interface FooModule extends IModule<'foo'> { getType(): 'foo' };
+        const fooModuleLoaderStrategy: IModuleLoaderStrategy<'foo'> = {
+            getType: () => "foo",
             load: jest.fn(),
         }
 
-        interface BarModule extends IModule<'bar'> { type: 'bar' };
-        const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar', BarModule> = {
-            loadsType: () => "bar",
+        interface BarModule extends IModule<'bar'> { getType(): 'bar' };
+        const barModuleLoaderStrategy: IModuleLoaderStrategy<'bar'> = {
+            getType: () => "bar",
             load: jest.fn(),
         }
 
-        interface BazModule extends IModule<'baz'> { type: 'baz' };
-        const bazModuleLoaderStrategy: IModuleLoaderStrategy<'baz', BazModule> = {
-            loadsType: () => "baz",
+        interface BazModule extends IModule<'baz'> { getType(): 'baz' };
+        const bazModuleLoaderStrategy: IModuleLoaderStrategy<'baz'> = {
+            getType: () => "baz",
             load: jest.fn(),
         }
 
         const loader = new BundleLoader(
+            new ModuleLoader,
             fooModuleLoaderStrategy,
             barModuleLoaderStrategy,
             bazModuleLoaderStrategy,
         );
 
-        const fooModule1 = { type: 'foo', name: 'FooModule1' };
-        const fooModule2 = { type: 'foo', name: 'FooModule2' };
-        const barModule1 = { type: 'bar', name: 'BarModule1' };
-        const bazModule1 = { type: 'baz', name: 'BazModule1' };
-        const bazModule2 = { type: 'baz', name: 'BazModule2' };
+        const fooModule1 = { getType: () => 'foo', getName: () => 'FooModule1' };
+        const fooModule2 = { getType: () => 'foo', getName: () => 'FooModule2' };
+        const barModule1 = { getType: () => 'bar', getName: () => 'BarModule1' };
+        const bazModule1 = { getType: () => 'baz', getName: () => 'BazModule1' };
+        const bazModule2 = { getType: () => 'baz', getName: () => 'BazModule2' };
 
-        loader.loadBundle({
-            name: 'TestBundle',
-            modules: [
+        loader.loadBundles({
+            getName: () => 'TestBundle',
+            getModules: () => [
                 barModule1,
                 bazModule2,
                 fooModule2,

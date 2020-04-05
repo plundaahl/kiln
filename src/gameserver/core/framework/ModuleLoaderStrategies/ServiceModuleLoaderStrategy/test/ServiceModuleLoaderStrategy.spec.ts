@@ -14,8 +14,8 @@ test(`Should pass register the module's factory, plus all identifiers, with the 
     const identifierB = new TypedIdentifier<TestSystem>('TestSystemId2');
 
     const module: IServiceModule<TestSystem> = {
-        type: 'service',
-        name: 'TestSystemModule',
+        getType: () => 'service',
+        getName: () => 'TestSystemModule',
         factory: () => { return { foo: 'foo' } },
         identifiers: [
             identifierA,
@@ -126,8 +126,8 @@ test(`When #load() is called, should pass first identifier into #onServiceRegist
     const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
 
     const module: IServiceModule<TestSystem> = {
-        type: 'service',
-        name: 'TestSystemModule',
+        getType: () => 'service',
+        getName: () => 'TestSystemModule',
         factory: () => { return { foo: 'foo' } },
         identifiers: [
             identifierA,
@@ -142,4 +142,77 @@ test(`When #load() is called, should pass first identifier into #onServiceRegist
 
     expect(onServiceRegistered).toHaveBeenCalledTimes(1);
     expect(onServiceRegistered).toHaveBeenCalledWith(identifierA);
+});
+
+test(`#load() should error if passed module if incorrect type`, () => {
+    type TestSystem = { foo: 'foo' };
+    const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
+
+    const onServiceRegistered = jest.fn();
+    const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
+    const strategy = new ServiceModuleLoaderStrategy(locator, onServiceRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'wrongType',
+            getName: () => 'TestSystemModule',
+            factory: () => { return { foo: 'foo' } },
+            identifiers: [
+                identifierA,
+            ],
+        } as unknown as IServiceModule<TestSystem>)
+    ).toThrow();
+});
+
+test(`#load() should error if passed module with no #factory function`, () => {
+    type TestSystem = { foo: 'foo' };
+    const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
+
+    const onServiceRegistered = jest.fn();
+    const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
+    const strategy = new ServiceModuleLoaderStrategy(locator, onServiceRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'service',
+            getName: () => 'TestSystemModule',
+            identifiers: [
+                identifierA,
+            ],
+        } as unknown as IServiceModule<TestSystem>)
+    ).toThrow();
+});
+
+test(`#load() should error if passed module with no identifiers property`, () => {
+    type TestSystem = { foo: 'foo' };
+
+    const onServiceRegistered = jest.fn();
+    const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
+    const strategy = new ServiceModuleLoaderStrategy(locator, onServiceRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'service',
+            getName: () => 'TestSystemModule',
+            factory: () => { return { foo: 'foo' } },
+        } as unknown as IServiceModule<TestSystem>)
+    ).toThrow();
+});
+
+test(`#load() should error if passed module less than one identifier`, () => {
+    type TestSystem = { foo: 'foo' };
+    const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
+
+    const onServiceRegistered = jest.fn();
+    const locator: IServiceRegistry = { registerServiceFactory: jest.fn() };
+    const strategy = new ServiceModuleLoaderStrategy(locator, onServiceRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'service',
+            getName: () => 'TestSystemModule',
+            factory: () => { return { foo: 'foo' } },
+            identifiers: [],
+        } as unknown as IServiceModule<TestSystem>)
+    ).toThrow();
 });

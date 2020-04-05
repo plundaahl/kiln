@@ -14,8 +14,8 @@ test(`Should pass register the module's factory, plus all identifiers, with the 
     const identifierB = new TypedIdentifier<TestSystem>('TestSystemId2');
 
     const module: ISystemModule<TestSystem> = {
-        type: 'system',
-        name: 'TestSystemModule',
+        getType: () => 'system',
+        getName: () => 'TestSystemModule',
         factory: () => { return { foo: 'foo' } },
         identifiers: [
             identifierA,
@@ -126,8 +126,8 @@ test(`When #load() is called, should pass first identifier into #onSystemRegiste
     const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
 
     const module: ISystemModule<TestSystem> = {
-        type: 'system',
-        name: 'TestSystemModule',
+        getType: () => 'system',
+        getName: () => 'TestSystemModule',
         factory: () => { return { foo: 'foo' } },
         identifiers: [
             identifierA,
@@ -142,4 +142,79 @@ test(`When #load() is called, should pass first identifier into #onSystemRegiste
 
     expect(onSystemRegistered).toHaveBeenCalledTimes(1);
     expect(onSystemRegistered).toHaveBeenCalledWith(identifierA);
+});
+
+
+test(`#load() should error when passed module of wrong type`, () => {
+    type TestSystem = { foo: 'foo' };
+
+    const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
+
+    const onSystemRegistered = jest.fn();
+    const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
+    const strategy = new SystemModuleLoaderStrategy(locator, onSystemRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'wrongtype',
+            getName: () => 'TestSystemModule',
+            factory: () => { return { foo: 'foo' } },
+            identifiers: [
+                identifierA,
+            ],
+        } as unknown as ISystemModule<TestSystem>)
+    ).toThrow();
+});
+
+test(`#load() should error when passed module with no factory`, () => {
+    type TestSystem = { foo: 'foo' };
+
+    const identifierA = new TypedIdentifier<TestSystem>('TestSystemId1');
+
+    const onSystemRegistered = jest.fn();
+    const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
+    const strategy = new SystemModuleLoaderStrategy(locator, onSystemRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'system',
+            getName: () => 'TestSystemModule',
+            identifiers: [
+                identifierA,
+            ],
+        } as unknown as ISystemModule<TestSystem>)
+    ).toThrow();
+});
+
+test(`#load() should error when passed module with no identifiers property`, () => {
+    type TestSystem = { foo: 'foo' };
+
+    const onSystemRegistered = jest.fn();
+    const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
+    const strategy = new SystemModuleLoaderStrategy(locator, onSystemRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'system',
+            getName: () => 'TestSystemModule',
+            factory: () => { return { foo: 'foo' } },
+        } as unknown as ISystemModule<TestSystem>)
+    ).toThrow();
+});
+
+test(`#load() should error when passed module of wrong type`, () => {
+    type TestSystem = { foo: 'foo' };
+
+    const onSystemRegistered = jest.fn();
+    const locator: ISystemRegistry = { registerSystemFactory: jest.fn() };
+    const strategy = new SystemModuleLoaderStrategy(locator, onSystemRegistered);
+
+    expect(() => strategy.load(
+        {
+            getType: () => 'system',
+            getName: () => 'TestSystemModule',
+            factory: () => { return { foo: 'foo' } },
+            identifiers: [],
+        } as unknown as ISystemModule<TestSystem>)
+    ).toThrow();
 });

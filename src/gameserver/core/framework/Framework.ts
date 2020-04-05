@@ -1,17 +1,17 @@
 import { IDependencyLocatorFacade, DependencyLocatorFacade } from './DependencyLocator';
 import { ISystemManager, SystemManager } from './SystemManager';
 import { IServiceManager, ServiceManager } from './ServiceManager';
-import { Bundle } from './Bundle';
 import {
-    IBundleLoader,
     BundleLoader,
+    ModuleLoader,
+    IBundleLoader,
     IBundle,
 } from './BundleLoader';
 import {
+    LoaderModuleLoaderStrategy,
     ServiceModuleLoaderStrategy,
     SystemModuleLoaderStrategy,
 } from './ModuleLoaderStrategies';
-
 
 export class Framework {
     private readonly dependencyLocator: IDependencyLocatorFacade;
@@ -20,14 +20,26 @@ export class Framework {
     private readonly serviceManager: IServiceManager;
 
     constructor(params: {
-        bundles: Bundle[],
+        bundles: IBundle[],
     }) {
         this.dependencyLocator = new DependencyLocatorFacade();
 
         this.systemManager = new SystemManager(this.dependencyLocator);
         this.serviceManager = new ServiceManager(this.dependencyLocator);
 
-        this.bundleLoader = new BundleLoader(
+        this.bundleLoader = this.createBundleLoader();
+        this.loadBundles(params.bundles);
+        this.initializeAllModules();
+    }
+
+    private createBundleLoader(): BundleLoader {
+        const moduleLoader = new ModuleLoader();
+        return new BundleLoader(
+            moduleLoader,
+            new LoaderModuleLoaderStrategy(
+                moduleLoader,
+                this.dependencyLocator,
+            ),
             new ServiceModuleLoaderStrategy(
                 this.dependencyLocator,
                 this.serviceManager.notifyServiceRegistered,
@@ -37,14 +49,11 @@ export class Framework {
                 this.systemManager.notifySystemRegistered,
             ),
         );
-
-        this.loadBundles(params.bundles);
-        this.initializeAllModules();
     }
 
     private loadBundles(bundles: IBundle[]): void {
         for (let bundle of bundles) {
-            this.bundleLoader.loadBundle(bundle);
+            this.bundleLoader.loadBundles(bundle);
         }
     }
 

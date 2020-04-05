@@ -10,7 +10,7 @@ describe('System Registration & Location', () => {
         `GIVEN I register a factory with #registerSystemFactory, ` +
         `THEN I should be able to retrieve it from #locateSystem.`,
         () => {
-            class FooSystem { foo(): String { return "foo"; } }
+            class FooSystem { foo(): string { return "foo"; } }
             type FooSystemFactory = () => FooSystem;
             const fooSystemId = new TypedIdentifier<FooSystem>('FooSystem');
             const fooSystemFactory: FooSystemFactory = () => new FooSystem();
@@ -28,7 +28,7 @@ describe('System Registration & Location', () => {
         `GIVEN I register a factory with #registerSystemFactory, ` +
         `THEN I should NOT be able to retrieve it from #locateService.`,
         () => {
-            class FooSystem { foo(): String { return "foo"; } }
+            class FooSystem { foo(): string { return "foo"; } }
             type FooSystemFactory = () => FooSystem;
             const fooSystemId = new TypedIdentifier<FooSystem>('FooSystem');
             const fooSystemFactory: FooSystemFactory = () => new FooSystem();
@@ -150,7 +150,7 @@ describe(`Service Location`, () => {
         `GIVEN I register a factory with #registerServiceFactory, ` +
         `THEN I should be able to retrieve it from #locateService.`,
         () => {
-            class FooService { foo(): String { return "foo"; } }
+            class FooService { foo(): string { return "foo"; } }
             type FooServiceFactory = () => FooService;
             const fooServiceId = new TypedIdentifier<FooService>('FooService');
             const fooServiceFactory: FooServiceFactory = () => new FooService();
@@ -168,7 +168,7 @@ describe(`Service Location`, () => {
         `GIVEN I register a factory with #registerSystemFactory, ` +
         `THEN I should NOT be able to retrieve it from #locateService.`,
         () => {
-            class FooService { foo(): String { return "foo"; } }
+            class FooService { foo(): string { return "foo"; } }
             type FooServiceFactory = () => FooService;
             const fooServiceId = new TypedIdentifier<FooService>('FooService');
             const fooServiceFactory: FooServiceFactory = () => new FooService();
