@@ -2,7 +2,7 @@ import {
     Framework, IBundle,
 } from './framework';
 
-export class GameServer {
+export class GameServerCore {
     private readonly framework: Framework;
 
     constructor(params: {

@@ -7,7 +7,9 @@ import {
 } from './BundleLoader';
 import { ILayerManager, LayerManager } from './LayerManager';
 import { LayerComponentModuleLoaderStrategy } from './ModuleLoaderStrategies';
+import { GameLoopRunner } from './GameLoopRunner';
 
+const TICKS_PER_SECOND = 20;
 const SYSTEM = 'system';
 const SERVICE = 'service';
 const CONTROLLER = 'controller';
@@ -15,6 +17,7 @@ const CONTROLLER = 'controller';
 export class Framework {
     private readonly dependencyLocator: IDependencyRegistry & IDependencyLocator;
     private readonly bundleLoader: IBundleLoader;
+    private readonly gameLoopRunner: GameLoopRunner;
     private readonly systemManager: ILayerManager;
     private readonly serviceManager: ILayerManager;
     private readonly controllerManager: ILayerManager;
@@ -37,6 +40,9 @@ export class Framework {
 
         this.loadBundles(params.bundles);
         this.initializeAllModules();
+
+        this.gameLoopRunner = new GameLoopRunner(this.dependencyLocator, TICKS_PER_SECOND, []);
+        this.gameLoopRunner.start();
     }
 
     private loadBundles(bundles: IBundle[]): void {
