@@ -1,6 +1,6 @@
 import {
-    IServiceLocator,
-    ISystemLocator,
+    IDependencyLocator,
+    IDependencyRegistry,
 } from '../../../DependencyLocator';
 import {
     LoaderModuleLoaderStrategy,
@@ -12,9 +12,9 @@ test(`Should error if passed module of wrong type`, () => {
     const registry: IModuleLoaderRegistry = {
         registerModuleLoaderStrategy: jest.fn()
     };
-    const locator: IServiceLocator & ISystemLocator = {
-        locateService: jest.fn(),
-        locateSystem: jest.fn(),
+    const locator: IDependencyRegistry & IDependencyLocator = {
+        locate: jest.fn(),
+        registerDependency: jest.fn(),
     }
     const loaderModuleLoaderStrategy = new LoaderModuleLoaderStrategy(
         registry,
@@ -38,9 +38,9 @@ test(`Should error if passed module with no #createLoader function`, () => {
     const registry: IModuleLoaderRegistry = {
         registerModuleLoaderStrategy: jest.fn()
     };
-    const locator: IServiceLocator & ISystemLocator = {
-        locateService: jest.fn(),
-        locateSystem: jest.fn(),
+    const locator: IDependencyRegistry & IDependencyLocator = {
+        locate: jest.fn(),
+        registerDependency: jest.fn(),
     }
     const loaderModuleLoaderStrategy = new LoaderModuleLoaderStrategy(
         registry,
@@ -59,9 +59,9 @@ test(`Should pass locator into module.createLoader`, () => {
     const registry: IModuleLoaderRegistry = {
         registerModuleLoaderStrategy: jest.fn()
     };
-    const locator: IServiceLocator & ISystemLocator = {
-        locateService: jest.fn(),
-        locateSystem: jest.fn(),
+    const locator: IDependencyRegistry & IDependencyLocator = {
+        locate: jest.fn(),
+        registerDependency: jest.fn(),
     }
     const loaderModuleLoaderStrategy = new LoaderModuleLoaderStrategy(
         registry,
@@ -89,9 +89,9 @@ test(`Should register result of module.createLoader with registry`, () => {
     const registry: IModuleLoaderRegistry = {
         registerModuleLoaderStrategy: jest.fn()
     };
-    const locator: IServiceLocator & ISystemLocator = {
-        locateService: jest.fn(),
-        locateSystem: jest.fn(),
+    const locator: IDependencyRegistry & IDependencyLocator = {
+        locate: jest.fn(),
+        registerDependency: jest.fn(),
     }
     const loaderModuleLoaderStrategy = new LoaderModuleLoaderStrategy(
         registry,
@@ -119,9 +119,9 @@ test(`#getType should return correct type`, () => {
     const registry: IModuleLoaderRegistry = {
         registerModuleLoaderStrategy: jest.fn()
     };
-    const locator: IServiceLocator & ISystemLocator = {
-        locateService: jest.fn(),
-        locateSystem: jest.fn(),
+    const locator: IDependencyRegistry & IDependencyLocator = {
+        locate: jest.fn(),
+        registerDependency: jest.fn(),
     }
     const loaderModuleLoaderStrategy = new LoaderModuleLoaderStrategy(
         registry,
