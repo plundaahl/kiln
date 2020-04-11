@@ -5,3 +5,8 @@ export {
     IModuleLoaderStrategy,
 } from './BundleLoader';
 export { Framework } from './Framework';
+export {
+    Logger,
+    ILoggerProvider,
+    ILoggerSPI,
+} from './Logger';
