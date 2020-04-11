@@ -4,8 +4,4 @@ export {
     IBundle,
     IModuleLoaderStrategy,
 } from './BundleLoader';
-export {
-    IServiceLocator,
-    ISystemLocator,
-} from './DependencyLocator';
 export { Framework } from './Framework';

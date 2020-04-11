@@ -2,13 +2,8 @@ import {
     IModule,
     IModuleLoaderStrategy,
 } from '../../BundleLoader';
-import {
-    IServiceLocator,
-    ISystemLocator,
-} from '../../DependencyLocator';
+import { IDependencyLocator } from '../../DependencyLocator';
 
 export interface ILoaderModule extends IModule<'loader'> {
-    createLoader(
-        locator: IServiceLocator & ISystemLocator
-    ): IModuleLoaderStrategy<string>
+    createLoader(locator: IDependencyLocator): IModuleLoaderStrategy<string>
 }

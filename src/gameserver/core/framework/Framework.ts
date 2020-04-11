@@ -1,54 +1,42 @@
-import { IDependencyLocatorFacade, DependencyLocatorFacade } from './DependencyLocator';
-import { ISystemManager, SystemManager } from './SystemManager';
-import { IServiceManager, ServiceManager } from './ServiceManager';
+import { DependencyLocator, IDependencyLocator, IDependencyRegistry } from './DependencyLocator';
 import {
     BundleLoader,
     ModuleLoader,
     IBundleLoader,
     IBundle,
 } from './BundleLoader';
-import {
-    LoaderModuleLoaderStrategy,
-    ServiceModuleLoaderStrategy,
-    SystemModuleLoaderStrategy,
-} from './ModuleLoaderStrategies';
+import { ILayerManager, LayerManager } from './LayerManager';
+import { LayerComponentModuleLoaderStrategy } from './ModuleLoaderStrategies';
+
+const SYSTEM = 'system';
+const SERVICE = 'service';
+const CONTROLLER = 'controller';
 
 export class Framework {
-    private readonly dependencyLocator: IDependencyLocatorFacade;
+    private readonly dependencyLocator: IDependencyRegistry & IDependencyLocator;
     private readonly bundleLoader: IBundleLoader;
-    private readonly systemManager: ISystemManager;
-    private readonly serviceManager: IServiceManager;
+    private readonly systemManager: ILayerManager;
+    private readonly serviceManager: ILayerManager;
+    private readonly controllerManager: ILayerManager;
 
     constructor(params: {
         bundles: IBundle[],
     }) {
-        this.dependencyLocator = new DependencyLocatorFacade();
+        this.dependencyLocator = new DependencyLocator();
 
-        this.systemManager = new SystemManager(this.dependencyLocator);
-        this.serviceManager = new ServiceManager(this.dependencyLocator);
+        this.systemManager = new LayerManager(this.dependencyLocator, SYSTEM, [SYSTEM]);
+        this.serviceManager = new LayerManager(this.dependencyLocator, SERVICE, [SYSTEM]);
+        this.controllerManager = new LayerManager(this.dependencyLocator, CONTROLLER, [SERVICE]);
 
-        this.bundleLoader = this.createBundleLoader();
+        this.bundleLoader = new BundleLoader(
+            new ModuleLoader(),
+            new LayerComponentModuleLoaderStrategy(this.systemManager, SYSTEM),
+            new LayerComponentModuleLoaderStrategy(this.serviceManager, SERVICE),
+            new LayerComponentModuleLoaderStrategy(this.controllerManager, CONTROLLER),
+        );
+
         this.loadBundles(params.bundles);
         this.initializeAllModules();
-    }
-
-    private createBundleLoader(): BundleLoader {
-        const moduleLoader = new ModuleLoader();
-        return new BundleLoader(
-            moduleLoader,
-            new LoaderModuleLoaderStrategy(
-                moduleLoader,
-                this.dependencyLocator,
-            ),
-            new ServiceModuleLoaderStrategy(
-                this.dependencyLocator,
-                this.serviceManager.notifyServiceRegistered,
-            ),
-            new SystemModuleLoaderStrategy(
-                this.dependencyLocator,
-                this.systemManager.notifySystemRegistered,
-            ),
-        );
     }
 
     private loadBundles(bundles: IBundle[]): void {
@@ -58,7 +46,8 @@ export class Framework {
     }
 
     private initializeAllModules(): void {
-        this.systemManager.initializeAllSystems();
-        this.serviceManager.initializeAllServices();
+        this.systemManager.initModules();
+        this.serviceManager.initModules();
+        this.controllerManager.initModules();
     }
 }

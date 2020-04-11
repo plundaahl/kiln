@@ -1,9 +1,3 @@
-export { TypedIdentifier } from './TypedIdentifier';
-export {
-    DependencyLocatorFacade,
-    IDependencyLocatorFacade,
-    IServiceLocator,
-    ISystemLocator,
-    ISystemRegistry,
-    IServiceRegistry,
-} from './DependencyLocatorFacade';
+export { DependencyLocator } from './DependencyLocator';
+export { IDependencyLocator } from './IDependencyLocator';
+export { IDependencyRegistry } from './IDependencyRegistry';

@@ -4,17 +4,14 @@ import {
     IModuleLoaderRegistry,
     IModule
 } from '../../BundleLoader';
-import {
-    IServiceLocator,
-    ISystemLocator,
-} from '../../DependencyLocator';
+import { IDependencyLocator } from '../../DependencyLocator';
 
 const typeName = 'loader';
 
 export class LoaderModuleLoaderStrategy implements IModuleLoaderStrategy<'loader'> {
     constructor(
         private readonly moduleLoaderRegistry: IModuleLoaderRegistry,
-        private readonly locator: IServiceLocator & ISystemLocator,
+        private readonly locator: IDependencyLocator,
     ) { }
 
     getType(): 'loader' {

@@ -1,4 +1,4 @@
-import { TypedIdentifier } from '..';
+import { TypedIdentifier } from '../TypedIdentifier';
 
 test(`toString correctly strips out Symbol( )`, () => {
     const foo = 'Foo';

@@ -1,9 +1,13 @@
+import { ILayerElementModule } from './LayerComponentModuleLoaderStrategy';
 import { ILoaderModule } from './LoaderModuleLoaderStrategy';
-import { IServiceModule } from './ServiceModuleLoaderStrategy';
-import { ISystemModule } from './SystemModuleLoaderStrategy';
+
+type ISystemModule<T> = ILayerElementModule<'system', T>;
+type IServiceModule<T> = ILayerElementModule<'service', T>;
+type IControllerModule<T> = ILayerElementModule<'controller', T>;
 
 export {
     ILoaderModule,
     IServiceModule,
     ISystemModule,
+    IControllerModule,
 };

@@ -1,7 +1,10 @@
-import { TypedIdentifier } from '../DependencyLocator';
+import { TypedIdentifier } from '../TypedIdentifier';
 import { Framework } from '..';
 import { IBundle } from '../BundleLoader';
-import { ISystemModule, IServiceModule } from '../ModuleLoaderStrategies/moduleTypes';
+import {
+    ISystemModule,
+    IServiceModule,
+} from '../ModuleLoaderStrategies/moduleTypes';
 
 describe(`Bundle Loading`, () => {
 
@@ -18,7 +21,7 @@ describe(`Bundle Loading`, () => {
                     ({
                         getType: () => 'system',
                         getName: () => 'TestSystemModule',
-                        factory: testSystemModuleFactoryFn,
+                        create: testSystemModuleFactoryFn,
                         identifiers: [
                             new TypedIdentifier<any>('TestSystemModule'),
                         ],
@@ -26,8 +29,7 @@ describe(`Bundle Loading`, () => {
                 ]
             }
 
-            const framework = new Framework({ bundles: [testBundle] });
-
+            new Framework({ bundles: [testBundle] });
             expect(testSystemModuleFactoryFn).toHaveBeenCalled();
         });
 
@@ -44,7 +46,7 @@ describe(`Bundle Loading`, () => {
                     ({
                         getType: () => 'service',
                         getName: () => 'TestServiceModule',
-                        factory: testServiceModuleFactoryFn,
+                        create: testServiceModuleFactoryFn,
                         identifiers: [
                             new TypedIdentifier<any>('TestServiceModule'),
                         ],
@@ -52,7 +54,7 @@ describe(`Bundle Loading`, () => {
                 ]
             }
 
-            const framework = new Framework({ bundles: [testBundle] });
+            new Framework({ bundles: [testBundle] });
 
             expect(testServiceModuleFactoryFn).toHaveBeenCalled();
         });
