@@ -1,5 +1,5 @@
-import { GameServer } from '../GameServer';
+import { GameServerCore } from '../GameServerCore';
 
 test(`GameServer initializes`, () => {
-    expect(() => new GameServer({})).not.toThrowError();
+    expect(() => new GameServerCore({})).not.toThrowError();
 });

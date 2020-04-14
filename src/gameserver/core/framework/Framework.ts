@@ -41,7 +41,10 @@ export class Framework {
         this.loadBundles(params.bundles);
         this.initializeAllModules();
 
-        this.gameLoopRunner = new GameLoopRunner(this.dependencyLocator, TICKS_PER_SECOND, []);
+        this.gameLoopRunner = new GameLoopRunner(
+            { ticksPerSecond: TICKS_PER_SECOND },
+            [],
+        );
         this.gameLoopRunner.start();
     }
 
