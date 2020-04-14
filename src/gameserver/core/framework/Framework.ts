@@ -5,9 +5,10 @@ import {
     IBundleLoader,
     IBundle,
 } from './BundleLoader';
-import { ILayerManager, LayerManager } from './LayerManager';
+import { ILayerManager, LayerManager, SystemManager, IUpdatableSystem } from './LayerManager';
 import { LayerComponentModuleLoaderStrategy } from './ModuleLoaderStrategies';
-import { GameLoopRunner } from './GameLoopRunner';
+import { GameLoopRunner, IUpdatableEntry } from './GameLoopRunner';
+import { TypedIdentifier } from './TypedIdentifier';
 
 const TICKS_PER_SECOND = 20;
 const SYSTEM = 'system';
@@ -18,16 +19,17 @@ export class Framework {
     private readonly dependencyLocator: IDependencyRegistry & IDependencyLocator;
     private readonly bundleLoader: IBundleLoader;
     private readonly gameLoopRunner: GameLoopRunner;
-    private readonly systemManager: ILayerManager;
+    private readonly systemManager: SystemManager;
     private readonly serviceManager: ILayerManager;
     private readonly controllerManager: ILayerManager;
 
     constructor(params: {
         bundles: IBundle[],
+        systemUpdateOrder: TypedIdentifier<IUpdatableSystem>[],
     }) {
         this.dependencyLocator = new DependencyLocator();
 
-        this.systemManager = new LayerManager(this.dependencyLocator, SYSTEM, [SYSTEM]);
+        this.systemManager = new SystemManager(this.dependencyLocator, params.systemUpdateOrder);
         this.serviceManager = new LayerManager(this.dependencyLocator, SERVICE, [SYSTEM]);
         this.controllerManager = new LayerManager(this.dependencyLocator, CONTROLLER, [SERVICE]);
 
@@ -43,7 +45,15 @@ export class Framework {
 
         this.gameLoopRunner = new GameLoopRunner(
             { ticksPerSecond: TICKS_PER_SECOND },
-            [],
+            [
+                ...(
+                    this.systemManager
+                        .getUpdatableSystems()
+                        .map(
+                            system => ([system, 'update'] as IUpdatableEntry<'update'>)
+                        )
+                ),
+            ],
         );
         this.gameLoopRunner.start();
     }

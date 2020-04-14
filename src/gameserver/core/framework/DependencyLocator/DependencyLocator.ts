@@ -20,14 +20,23 @@ export class DependencyLocator implements IDependencyLocator, IDependencyRegistr
     private readonly dependencies: DependencyEntry<any>[] = [];
     private readonly requestStack: RequestEntry[] = [];
 
-    locate<T>(identifier: TypedIdentifier<T>, inScopes?: string[]): T {
+    constructor() {
+        this.locate = this.locate.bind(this);
+        this.registerDependency = this.registerDependency.bind(this);
+        this.getLocateFnForScopes = this.getLocateFnForScopes.bind(this);
+        this.createNoDependencyErrMsg = this.createNoDependencyErrMsg.bind(this);
+        this.createInvalidScopeErrMsg = this.createInvalidScopeErrMsg.bind(this);
+        this.createCircularDependencyErrMsg = this.createCircularDependencyErrMsg.bind(this);
+    }
+
+    locate<T>(identifier: TypedIdentifier<T>, inScopes: string[] = []): T {
         const depNum = this.idMap.get(identifier);
         if (depNum === undefined) {
             throw new Error(this.createNoDependencyErrMsg(identifier));
         }
 
         const registryEntry = this.dependencies[depNum];
-        if (inScopes && !inScopes.includes(registryEntry.scope)) {
+        if (inScopes.length > 0 && !inScopes.includes(registryEntry.scope)) {
             throw new Error(this.createInvalidScopeErrMsg(identifier, inScopes));
         }
 

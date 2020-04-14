@@ -13,6 +13,7 @@ export class GameServerCore {
                 // later: add in core.bundles
                 ...(params.bundles || [])
             ],
+            systemUpdateOrder: [],
         });
     }
 }

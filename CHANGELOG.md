@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - GameServer: top-level `GameServer` class
 - GameServer: `GameLoopRunner` class
 - Change tsconfig module type to `commonjs` and output all files, not bundle
+- Add method binds to `DependencyLocator`
 
 ### Changed
 ### Deprecated

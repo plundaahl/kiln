@@ -38,4 +38,7 @@ export class LayerManager implements ILayerManager {
         });
     }
 
+    protected getDependencyLocator(): IDependencyLocator {
+        return this.dependencyLocator;
+    }
 }

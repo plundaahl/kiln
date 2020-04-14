@@ -29,7 +29,10 @@ describe(`Bundle Loading`, () => {
                 ]
             }
 
-            new Framework({ bundles: [testBundle] });
+            new Framework({
+                bundles: [testBundle],
+                systemUpdateOrder: [],
+            });
             expect(testSystemModuleFactoryFn).toHaveBeenCalled();
         });
 
@@ -54,7 +57,10 @@ describe(`Bundle Loading`, () => {
                 ]
             }
 
-            new Framework({ bundles: [testBundle] });
+            new Framework({
+                bundles: [testBundle],
+                systemUpdateOrder: [],
+            });
 
             expect(testServiceModuleFactoryFn).toHaveBeenCalled();
         });
