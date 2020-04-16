@@ -1,4 +1,4 @@
-import { ILayerManager, LayerManager } from '../..';
+import { ILayerManager, LayerManager } from '../../../mechanisms/LayerManager';
 import { IDependencyLocator, IDependencyRegistry } from '../../../mechanisms/DependencyLocator';
 import { TypedIdentifier } from '../../../mechanisms/TypedIdentifier';
 import { IUpdatableSystem } from './IUpdatableSystem';

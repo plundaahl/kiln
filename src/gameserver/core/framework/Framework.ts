@@ -6,27 +6,26 @@ import {
     IBundle,
 } from './mechanisms/BundleLoader';
 import {
-    ILayerManager,
-    LayerManager,
-    SystemManager,
-    IUpdatableSystem,
-    IAgentManager,
     AgentLayerManager,
+    ServiceManager,
+    SystemManager,
+    IAgentManager,
+    IService,
+    ISystem,
+    IUpdatableSystem,
 } from './layers';
 import { LayerComponentModuleLoaderStrategy } from './mechanisms/ModuleLoaderStrategies';
 import { GameLoopRunner, IUpdatableEntry } from './mechanisms/GameLoopRunner';
 import { TypedIdentifier } from './mechanisms/TypedIdentifier';
 
 const TICKS_PER_SECOND = 20;
-const SYSTEM = 'system';
-const SERVICE = 'service';
 
 export class Framework {
     private readonly dependencyLocator: IDependencyRegistry & IDependencyLocator;
     private readonly bundleLoader: IBundleLoader;
     private readonly gameLoopRunner: GameLoopRunner;
     private readonly systemManager: SystemManager;
-    private readonly serviceManager: ILayerManager<IUpdatableSystem>;
+    private readonly serviceManager: ServiceManager;
     private readonly agentLayerManager: AgentLayerManager;
 
     constructor(params: {
@@ -35,16 +34,22 @@ export class Framework {
     }) {
         this.dependencyLocator = new DependencyLocator();
         this.systemManager = new SystemManager(this.dependencyLocator, params.systemUpdateOrder);
-        this.serviceManager = new LayerManager(this.dependencyLocator, SERVICE, [SystemManager.scope]);
-        this.agentLayerManager = new AgentLayerManager(this.dependencyLocator, [SERVICE]);
+        this.serviceManager = new ServiceManager(this.dependencyLocator, [SystemManager.scope]);
+        this.agentLayerManager = new AgentLayerManager(this.dependencyLocator, [ServiceManager.scope]);
 
         this.bundleLoader = new BundleLoader(
             new ModuleLoader(),
-            new LayerComponentModuleLoaderStrategy<typeof SYSTEM, IUpdatableSystem>(
+
+            new LayerComponentModuleLoaderStrategy<typeof SystemManager.scope, ISystem>(
                 this.systemManager,
-                SYSTEM,
+                SystemManager.scope,
             ),
-            new LayerComponentModuleLoaderStrategy(this.serviceManager, SERVICE),
+
+            new LayerComponentModuleLoaderStrategy<typeof ServiceManager.scope, IService>(
+                this.serviceManager,
+                ServiceManager.scope,
+            ),
+
             new LayerComponentModuleLoaderStrategy<typeof AgentLayerManager.scope, IAgentManager>(
                 this.agentLayerManager,
                 AgentLayerManager.scope,

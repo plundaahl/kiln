@@ -1,4 +1,4 @@
-import { LayerManager } from '../../../layers';
+import { LayerManager } from '..';
 import { IDependencyLocator, IDependencyRegistry } from '../../DependencyLocator';
 import { TypedIdentifier } from '../../TypedIdentifier';
 

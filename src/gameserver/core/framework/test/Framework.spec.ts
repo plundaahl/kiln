@@ -2,6 +2,9 @@ import { TypedIdentifier } from '../mechanisms/TypedIdentifier';
 import { Framework } from '..';
 import { IBundle } from '../mechanisms/BundleLoader';
 import {
+    ServiceManager, SystemManager,
+} from '../layers';
+import {
     ISystemModule,
     IServiceModule,
 } from '../mechanisms/ModuleLoaderStrategies/moduleTypes';
@@ -19,7 +22,7 @@ describe(`Bundle Loading`, () => {
                 getName: () => 'TestBundle',
                 getModules: () => [
                     ({
-                        getType: () => 'system',
+                        getType: () => SystemManager.scope,
                         getName: () => 'TestSystemModule',
                         create: testSystemModuleFactoryFn,
                         identifiers: [
@@ -47,7 +50,7 @@ describe(`Bundle Loading`, () => {
                 getName: () => 'TestBundle',
                 getModules: () => [
                     ({
-                        getType: () => 'service',
+                        getType: () => ServiceManager.scope,
                         getName: () => 'TestServiceModule',
                         create: testServiceModuleFactoryFn,
                         identifiers: [
