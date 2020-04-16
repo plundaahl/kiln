@@ -5,7 +5,14 @@ import {
     IBundleLoader,
     IBundle,
 } from './BundleLoader';
-import { ILayerManager, LayerManager, SystemManager, IUpdatableSystem } from './LayerManager';
+import {
+    ILayerManager,
+    LayerManager,
+    SystemManager,
+    IUpdatableSystem,
+    IAgentManager,
+    AgentLayerManager,
+} from './LayerManager';
 import { LayerComponentModuleLoaderStrategy } from './ModuleLoaderStrategies';
 import { GameLoopRunner, IUpdatableEntry } from './GameLoopRunner';
 import { TypedIdentifier } from './TypedIdentifier';
@@ -13,15 +20,14 @@ import { TypedIdentifier } from './TypedIdentifier';
 const TICKS_PER_SECOND = 20;
 const SYSTEM = 'system';
 const SERVICE = 'service';
-const CONTROLLER = 'controller';
 
 export class Framework {
     private readonly dependencyLocator: IDependencyRegistry & IDependencyLocator;
     private readonly bundleLoader: IBundleLoader;
     private readonly gameLoopRunner: GameLoopRunner;
     private readonly systemManager: SystemManager;
-    private readonly serviceManager: ILayerManager;
-    private readonly controllerManager: ILayerManager;
+    private readonly serviceManager: ILayerManager<IUpdatableSystem>;
+    private readonly agentLayerManager: ILayerManager<IAgentManager>;
 
     constructor(params: {
         bundles: IBundle[],
@@ -31,13 +37,19 @@ export class Framework {
 
         this.systemManager = new SystemManager(this.dependencyLocator, params.systemUpdateOrder);
         this.serviceManager = new LayerManager(this.dependencyLocator, SERVICE, [SYSTEM]);
-        this.controllerManager = new LayerManager(this.dependencyLocator, CONTROLLER, [SERVICE]);
+        this.agentLayerManager = new AgentLayerManager(this.dependencyLocator, [SERVICE]);
 
         this.bundleLoader = new BundleLoader(
             new ModuleLoader(),
-            new LayerComponentModuleLoaderStrategy(this.systemManager, SYSTEM),
+            new LayerComponentModuleLoaderStrategy<typeof SYSTEM, IUpdatableSystem>(
+                this.systemManager,
+                SYSTEM,
+            ),
             new LayerComponentModuleLoaderStrategy(this.serviceManager, SERVICE),
-            new LayerComponentModuleLoaderStrategy(this.controllerManager, CONTROLLER),
+            new LayerComponentModuleLoaderStrategy(
+                this.agentLayerManager,
+                AgentLayerManager.scope,
+            ),
         );
 
         this.loadBundles(params.bundles);
@@ -67,6 +79,6 @@ export class Framework {
     private initializeAllModules(): void {
         this.systemManager.initModules();
         this.serviceManager.initModules();
-        this.controllerManager.initModules();
+        this.agentLayerManager.initModules();
     }
 }

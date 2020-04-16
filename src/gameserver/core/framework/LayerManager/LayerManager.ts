@@ -5,7 +5,7 @@ import {
     IDependencyLocator,
 } from '../DependencyLocator';
 
-export class LayerManager implements ILayerManager {
+export class LayerManager<T> implements ILayerManager<T> {
 
     private readonly modulesToInit: TypedIdentifier<any>[] = [];
 
@@ -17,13 +17,14 @@ export class LayerManager implements ILayerManager {
 
     initModules(): void {
         for (let moduleIdentifier of this.modulesToInit) {
-            this.dependencyLocator.locate(moduleIdentifier);
+            const module = this.dependencyLocator.locate(moduleIdentifier);
+            this.onModuleInit(module);
         }
     }
 
-    registerModule<T>(
-        create: (locate: <J>(identifier: TypedIdentifier<J>) => J) => T,
-        ...identifiers: TypedIdentifier<T>[]
+    registerModule<J extends T>(
+        create: (locate: <K>(identifier: TypedIdentifier<K>) => K) => J,
+        ...identifiers: TypedIdentifier<J>[]
     ): void {
         if (identifiers.length === 0) {
             throw new Error('Modules must have at least one identifier');
@@ -40,5 +41,9 @@ export class LayerManager implements ILayerManager {
 
     protected getDependencyLocator(): IDependencyLocator {
         return this.dependencyLocator;
+    }
+
+    protected onModuleInit(module: T): void {
+        // Override to hook in
     }
 }

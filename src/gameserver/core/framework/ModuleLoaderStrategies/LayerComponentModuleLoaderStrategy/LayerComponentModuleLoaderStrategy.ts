@@ -5,26 +5,26 @@ import {
     IModule
 } from '../../BundleLoader';
 
-export class LayerComponentModuleLoaderStrategy<T extends string>
-    implements IModuleLoaderStrategy<T> {
+export class LayerComponentModuleLoaderStrategy<N extends string, T>
+    implements IModuleLoaderStrategy<N> {
 
     constructor(
-        private readonly layerManager: ILayerManager,
-        private readonly typeString: T,
+        private readonly layerManager: ILayerManager<T>,
+        private readonly typeString: N,
     ) { }
 
-    getType(): T {
+    getType(): N {
         return this.typeString;
     }
 
-    load(module: IModule<T>): void {
+    load(module: IModule<N>): void {
         const _module = this.parseModule(module);
         const { create, identifiers } = _module;
 
         this.layerManager.registerModule(create, ...identifiers)
     }
 
-    private parseModule(module: IModule<T>): ILayerElementModule<T, any> {
+    private parseModule(module: IModule<N>): ILayerElementModule<N, any> {
         const type = module.getType();
         if (type !== this.typeString) {
             throw new Error(`Tried to register module ${module.getName()} with `
@@ -33,7 +33,7 @@ export class LayerComponentModuleLoaderStrategy<T extends string>
                 + `Offending module: ${module}`);
         }
 
-        const parsedModule = module as ILayerElementModule<T, any>;
+        const parsedModule = module as ILayerElementModule<N, any>;
         if (parsedModule.create === undefined) {
             throw new Error(`Module ${module.getName()} contains no #create() function`);
         }

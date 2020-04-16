@@ -6,7 +6,9 @@ import { IUpdatableSystem } from './IUpdatableSystem';
 const scope = 'system';
 const queryableScopes = [scope];
 
-export class SystemManager extends LayerManager implements ILayerManager {
+export class SystemManager
+    extends LayerManager<IUpdatableSystem>
+    implements ILayerManager<IUpdatableSystem> {
 
     private updateables: IUpdatableSystem[] = [];
 
