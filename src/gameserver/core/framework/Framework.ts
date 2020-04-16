@@ -27,16 +27,15 @@ export class Framework {
     private readonly gameLoopRunner: GameLoopRunner;
     private readonly systemManager: SystemManager;
     private readonly serviceManager: ILayerManager<IUpdatableSystem>;
-    private readonly agentLayerManager: ILayerManager<IAgentManager>;
+    private readonly agentLayerManager: AgentLayerManager;
 
     constructor(params: {
         bundles: IBundle[],
         systemUpdateOrder: TypedIdentifier<IUpdatableSystem>[],
     }) {
         this.dependencyLocator = new DependencyLocator();
-
         this.systemManager = new SystemManager(this.dependencyLocator, params.systemUpdateOrder);
-        this.serviceManager = new LayerManager(this.dependencyLocator, SERVICE, [SYSTEM]);
+        this.serviceManager = new LayerManager(this.dependencyLocator, SERVICE, [SystemManager.scope]);
         this.agentLayerManager = new AgentLayerManager(this.dependencyLocator, [SERVICE]);
 
         this.bundleLoader = new BundleLoader(
@@ -46,7 +45,7 @@ export class Framework {
                 SYSTEM,
             ),
             new LayerComponentModuleLoaderStrategy(this.serviceManager, SERVICE),
-            new LayerComponentModuleLoaderStrategy(
+            new LayerComponentModuleLoaderStrategy<typeof AgentLayerManager.scope, IAgentManager>(
                 this.agentLayerManager,
                 AgentLayerManager.scope,
             ),
@@ -58,13 +57,9 @@ export class Framework {
         this.gameLoopRunner = new GameLoopRunner(
             { ticksPerSecond: TICKS_PER_SECOND },
             [
-                ...(
-                    this.systemManager
-                        .getUpdatableSystems()
-                        .map(
-                            system => ([system, 'update'] as IUpdatableEntry<'update'>)
-                        )
-                ),
+                ...this.getAgentPreWorldUpdateListeners(),
+                ...this.getUpdatableSystems(),
+                ...this.getAgentPostWorldUpdateListeners(),
             ],
         );
         this.gameLoopRunner.start();
@@ -80,5 +75,26 @@ export class Framework {
         this.systemManager.initModules();
         this.serviceManager.initModules();
         this.agentLayerManager.initModules();
+    }
+
+    private getUpdatableSystems(): IUpdatableEntry<'update'>[] {
+        return this
+            .systemManager
+            .getUpdatableSystems()
+            .map(system => ([system, 'update']));
+    }
+
+    private getAgentPreWorldUpdateListeners(): IUpdatableEntry<'onPreWorldUpdate'>[] {
+        return this
+            .agentLayerManager
+            .getPreWorldUpdateListeners()
+            .map(agentManager => [agentManager, 'onPreWorldUpdate']);
+    }
+
+    private getAgentPostWorldUpdateListeners(): IUpdatableEntry<'onPostWorldUpdate'>[] {
+        return this
+            .agentLayerManager
+            .getPostWorldUpdateListeners()
+            .map(agentManager => [agentManager, 'onPostWorldUpdate']);
     }
 }

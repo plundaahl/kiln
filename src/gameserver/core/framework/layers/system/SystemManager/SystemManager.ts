@@ -2,21 +2,20 @@ import { ILayerManager, LayerManager } from '../..';
 import { IDependencyLocator, IDependencyRegistry } from '../../../mechanisms/DependencyLocator';
 import { TypedIdentifier } from '../../../mechanisms/TypedIdentifier';
 import { IUpdatableSystem } from './IUpdatableSystem';
-
-const scope = 'system';
-const queryableScopes = [scope];
+import { ISystem } from './ISystem';
 
 export class SystemManager
-    extends LayerManager<IUpdatableSystem>
-    implements ILayerManager<IUpdatableSystem> {
+    extends LayerManager<ISystem>
+    implements ILayerManager<ISystem> {
 
+    public static readonly scope = 'system';
     private updateables: IUpdatableSystem[] = [];
 
     constructor(
         dependencyLocator: IDependencyLocator & IDependencyRegistry,
         private readonly updateOrderIdentifiers: TypedIdentifier<IUpdatableSystem>[],
     ) {
-        super(dependencyLocator, scope, queryableScopes);
+        super(dependencyLocator, SystemManager.scope, [SystemManager.scope]);
     }
 
     getUpdatableSystems(): IUpdatableSystem[] {
