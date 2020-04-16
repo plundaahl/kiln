@@ -1,10 +1,10 @@
-import { DependencyLocator, IDependencyLocator, IDependencyRegistry } from './DependencyLocator';
+import { DependencyLocator, IDependencyLocator, IDependencyRegistry } from './mechanisms/DependencyLocator';
 import {
     BundleLoader,
     ModuleLoader,
     IBundleLoader,
     IBundle,
-} from './BundleLoader';
+} from './mechanisms/BundleLoader';
 import {
     ILayerManager,
     LayerManager,
@@ -12,10 +12,10 @@ import {
     IUpdatableSystem,
     IAgentManager,
     AgentLayerManager,
-} from './LayerManager';
-import { LayerComponentModuleLoaderStrategy } from './ModuleLoaderStrategies';
-import { GameLoopRunner, IUpdatableEntry } from './GameLoopRunner';
-import { TypedIdentifier } from './TypedIdentifier';
+} from './layers';
+import { LayerComponentModuleLoaderStrategy } from './mechanisms/ModuleLoaderStrategies';
+import { GameLoopRunner, IUpdatableEntry } from './mechanisms/GameLoopRunner';
+import { TypedIdentifier } from './mechanisms/TypedIdentifier';
 
 const TICKS_PER_SECOND = 20;
 const SYSTEM = 'system';

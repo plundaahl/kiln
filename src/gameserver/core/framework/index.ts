@@ -1,12 +1,12 @@
-export { moduleTypes } from './ModuleLoaderStrategies';
+export { moduleTypes } from './mechanisms/ModuleLoaderStrategies';
 export {
     IModule,
     IBundle,
     IModuleLoaderStrategy,
-} from './BundleLoader';
+} from './mechanisms/BundleLoader';
 export { Framework } from './Framework';
 export {
     Logger,
     ILoggerProvider,
     ILoggerSPI,
-} from './Logger';
+} from './mechanisms/Logger';

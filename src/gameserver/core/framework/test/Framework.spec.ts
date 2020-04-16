@@ -1,10 +1,10 @@
-import { TypedIdentifier } from '../TypedIdentifier';
+import { TypedIdentifier } from '../mechanisms/TypedIdentifier';
 import { Framework } from '..';
-import { IBundle } from '../BundleLoader';
+import { IBundle } from '../mechanisms/BundleLoader';
 import {
     ISystemModule,
     IServiceModule,
-} from '../ModuleLoaderStrategies/moduleTypes';
+} from '../mechanisms/ModuleLoaderStrategies/moduleTypes';
 
 describe(`Bundle Loading`, () => {
 

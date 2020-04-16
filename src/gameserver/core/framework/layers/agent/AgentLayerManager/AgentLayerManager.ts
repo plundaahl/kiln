@@ -1,9 +1,9 @@
-import { ILayerManager } from '../ILayerManager';
-import { LayerManager } from '../LayerManager';
+import { ILayerManager } from '../../../mechanisms/LayerManager/ILayerManager';
+import { LayerManager } from '../../../mechanisms/LayerManager/LayerManager';
 import { IAgentManager } from './IAgentManager';
 import { IPostWorldUpdateListener } from './IPostWorldUpdateListener';
 import { IPreWorldUpdateListener } from './IPreWorldUpdateListener';
-import { IDependencyRegistry, IDependencyLocator } from '../../DependencyLocator';
+import { IDependencyRegistry, IDependencyLocator } from '../../../mechanisms/DependencyLocator';
 
 export class AgentLayerManager
     extends LayerManager<IAgentManager>

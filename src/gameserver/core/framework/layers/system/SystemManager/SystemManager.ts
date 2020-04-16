@@ -1,6 +1,6 @@
-import { ILayerManager, LayerManager } from '..';
-import { IDependencyLocator, IDependencyRegistry } from '../../DependencyLocator';
-import { TypedIdentifier } from '../../TypedIdentifier';
+import { ILayerManager, LayerManager } from '../..';
+import { IDependencyLocator, IDependencyRegistry } from '../../../mechanisms/DependencyLocator';
+import { TypedIdentifier } from '../../../mechanisms/TypedIdentifier';
 import { IUpdatableSystem } from './IUpdatableSystem';
 
 const scope = 'system';

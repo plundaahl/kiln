@@ -1,5 +1,5 @@
-import { DependencyLocator } from '../../../DependencyLocator';
-import { TypedIdentifier } from '../../../TypedIdentifier';
+import { DependencyLocator } from '../../../../mechanisms/DependencyLocator';
+import { TypedIdentifier } from '../../../../mechanisms/TypedIdentifier';
 import {
     SystemManager,
     IUpdatableSystem,

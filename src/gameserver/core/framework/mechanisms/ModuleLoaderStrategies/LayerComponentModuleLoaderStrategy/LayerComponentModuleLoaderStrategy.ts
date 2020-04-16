@@ -1,5 +1,5 @@
 import { ILayerElementModule } from './ILayerElementModule';
-import { ILayerManager } from '../../LayerManager';
+import { ILayerManager } from '../../../layers';
 import {
     IModuleLoaderStrategy,
     IModule

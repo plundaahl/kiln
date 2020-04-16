@@ -1,5 +1,5 @@
-import { DependencyLocator } from '../../../DependencyLocator';
-import { TypedIdentifier } from '../../../TypedIdentifier';
+import { DependencyLocator } from '../../../../mechanisms/DependencyLocator';
+import { TypedIdentifier } from '../../../../mechanisms/TypedIdentifier';
 import { AgentLayerManager } from '../AgentLayerManager';
 import { IAgentManager } from '../IAgentManager';
 import { IPostWorldUpdateListener } from '../IPostWorldUpdateListener';
