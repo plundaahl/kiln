@@ -1,3 +1,3 @@
-export { ISystem, IUpdatableSystem, SystemManager } from './system/SystemManager';
-export { IAgentManager, AgentLayerManager } from './agent/AgentLayerManager';
-export { IService, ServiceManager } from './service';
+export { ISystem, IUpdatableSystem, SystemManager, ISystemModule } from './system';
+export { IAgentManager, AgentLayerManager, IAgentManagerModule } from './agent';
+export { IService, ServiceManager, IServiceModule } from './service';

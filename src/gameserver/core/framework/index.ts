@@ -1,4 +1,4 @@
-export { moduleTypes } from './mechanisms/ModuleLoaderStrategies';
+export * as moduleTypes from './moduleTypes';
 export {
     IModule,
     IBundle,

@@ -2,12 +2,11 @@ import { TypedIdentifier } from '../mechanisms/TypedIdentifier';
 import { Framework } from '..';
 import { IBundle } from '../mechanisms/BundleLoader';
 import {
-    ServiceManager, SystemManager,
-} from '../layers';
-import {
+    ServiceManager,
+    SystemManager,
     ISystemModule,
     IServiceModule,
-} from '../mechanisms/ModuleLoaderStrategies/moduleTypes';
+} from '../layers';
 
 describe(`Bundle Loading`, () => {
 
