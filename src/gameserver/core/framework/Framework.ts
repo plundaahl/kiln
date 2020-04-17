@@ -6,11 +6,13 @@ import {
     IBundle,
 } from './mechanisms/BundleLoader';
 import {
+    ServerManager,
     AgentLayerManager,
     ServiceManager,
     SystemManager,
     IAgentManager,
     IService,
+    IServerController,
     ISystem,
     IUpdatableSystem,
 } from './layers';
@@ -27,6 +29,7 @@ export class Framework {
     private readonly systemManager: SystemManager;
     private readonly serviceManager: ServiceManager;
     private readonly agentLayerManager: AgentLayerManager;
+    private readonly serverManager: ServerManager;
 
     constructor(params: {
         bundles: IBundle[],
@@ -36,6 +39,7 @@ export class Framework {
         this.systemManager = new SystemManager(this.dependencyLocator, params.systemUpdateOrder);
         this.serviceManager = new ServiceManager(this.dependencyLocator, [SystemManager.scope]);
         this.agentLayerManager = new AgentLayerManager(this.dependencyLocator, [ServiceManager.scope]);
+        this.serverManager = new ServerManager(this.dependencyLocator, [AgentLayerManager.scope]);
 
         this.bundleLoader = new BundleLoader(
             new ModuleLoader(),
@@ -53,6 +57,11 @@ export class Framework {
             new LayerComponentModuleLoaderStrategy<typeof AgentLayerManager.scope, IAgentManager>(
                 this.agentLayerManager,
                 AgentLayerManager.scope,
+            ),
+
+            new LayerComponentModuleLoaderStrategy<typeof ServerManager.scope, IServerController>(
+                this.serverManager,
+                ServerManager.scope,
             ),
         );
 
