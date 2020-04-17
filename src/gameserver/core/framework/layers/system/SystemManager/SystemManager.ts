@@ -8,7 +8,7 @@ export class SystemManager
     extends LayerManager<ISystem>
     implements ILayerManager<ISystem> {
 
-    public static readonly scope = 'system';
+    public static readonly scope = 'core.System';
     private updateables: IUpdatableSystem[] = [];
 
     constructor(

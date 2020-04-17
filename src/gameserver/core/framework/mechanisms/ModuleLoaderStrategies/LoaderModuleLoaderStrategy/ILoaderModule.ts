@@ -4,6 +4,8 @@ import {
 } from '../../BundleLoader';
 import { IDependencyLocator } from '../../DependencyLocator';
 
-export interface ILoaderModule extends IModule<'loader'> {
+import { LoaderModuleLoaderStrategy } from './LoaderModuleLoaderStrategy';
+
+export interface ILoaderModule extends IModule<typeof LoaderModuleLoaderStrategy.typeName> {
     createLoader(locator: IDependencyLocator): IModuleLoaderStrategy<string>
 }

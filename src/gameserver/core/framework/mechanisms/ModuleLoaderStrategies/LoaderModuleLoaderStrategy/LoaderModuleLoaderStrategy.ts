@@ -6,21 +6,22 @@ import {
 } from '../../BundleLoader';
 import { IDependencyLocator } from '../../DependencyLocator';
 
-const typeName = 'loader';
+export class LoaderModuleLoaderStrategy implements IModuleLoaderStrategy<typeof LoaderModuleLoaderStrategy.typeName> {
 
-export class LoaderModuleLoaderStrategy implements IModuleLoaderStrategy<'loader'> {
+    public static readonly typeName = 'core.Loader';
+
     constructor(
         private readonly moduleLoaderRegistry: IModuleLoaderRegistry,
         private readonly locator: IDependencyLocator,
     ) { }
 
-    getType(): 'loader' {
-        return typeName;
+    getType(): typeof LoaderModuleLoaderStrategy.typeName {
+        return LoaderModuleLoaderStrategy.typeName;
     }
 
-    load(module: IModule<'loader'>): void {
+    load(module: IModule<typeof LoaderModuleLoaderStrategy.typeName>): void {
         const type = module.getType();
-        if (type !== typeName) {
+        if (type !== LoaderModuleLoaderStrategy.typeName) {
             throw new Error(`LoaderModuleLoaderStrategy #load was passed module of type ${type}`);
         }
 

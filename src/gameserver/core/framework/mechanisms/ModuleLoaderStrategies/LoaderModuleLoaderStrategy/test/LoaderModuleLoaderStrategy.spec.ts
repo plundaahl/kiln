@@ -49,7 +49,7 @@ test(`Should error if passed module with no #createLoader function`, () => {
 
     expect(() => loaderModuleLoaderStrategy.load(
         {
-            getType: () => 'loader',
+            getType: () => LoaderModuleLoaderStrategy.typeName,
             getName: () => 'testModule',
         } as unknown as ILoaderModule)
     ).toThrowError();
@@ -67,14 +67,14 @@ test(`Should pass locator into module.createLoader`, () => {
         registry,
         locator,
     );
-    const testModuleLoaderStrategy: IModuleLoaderStrategy<'loader'> = {
-        getType: () => 'loader',
+    const testModuleLoaderStrategy: IModuleLoaderStrategy<typeof LoaderModuleLoaderStrategy.typeName> = {
+        getType: () => LoaderModuleLoaderStrategy.typeName,
         load: () => { },
     }
 
     const createLoaderSpy = jest.fn()
     loaderModuleLoaderStrategy.load({
-        getType: () => 'loader',
+        getType: () => LoaderModuleLoaderStrategy.typeName,
         getName: () => 'testModule',
         createLoader: (locator) => {
             createLoaderSpy(locator);
@@ -97,14 +97,14 @@ test(`Should register result of module.createLoader with registry`, () => {
         registry,
         locator,
     );
-    const testModuleLoaderStrategy: IModuleLoaderStrategy<'loader'> = {
-        getType: () => 'loader',
+    const testModuleLoaderStrategy: IModuleLoaderStrategy<typeof LoaderModuleLoaderStrategy.typeName> = {
+        getType: () => LoaderModuleLoaderStrategy.typeName,
         load: () => { },
     }
 
     const createLoaderSpy = jest.fn()
     loaderModuleLoaderStrategy.load({
-        getType: () => 'loader',
+        getType: () => LoaderModuleLoaderStrategy.typeName,
         getName: () => 'testModule',
         createLoader: (locator) => {
             createLoaderSpy(locator);
@@ -128,5 +128,5 @@ test(`#getType should return correct type`, () => {
         locator,
     );
 
-    expect(loaderModuleLoaderStrategy.getType()).toBe('loader');
+    expect(loaderModuleLoaderStrategy.getType()).toBe(LoaderModuleLoaderStrategy.typeName);
 });
